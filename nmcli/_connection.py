@@ -68,13 +68,13 @@ class ConnectionControl(ConnectionControlInterface):
         cmd = ['connection', 'add', 'type', conn_type, 'ssid', ssid, 'ifname', ifname, 'save', save]
         if autoconnect is not None:
             cmd += ['autoconnect', 'yes' if autoconnect else 'no']
-        if conn_type is "wifi" and mode is not None:
+        if conn_type == "wifi" and mode is not None:
             cmd += ['mode', mode]
-            if mode is "ap":
+            if mode == "ap":
                 cmd += ['ipv4.method', 'shared', 'ipv4.addr', ip]
         if not name is None:
             cmd += ['con-name', name]
- 
+        
         self._syscmd.nmcli(cmd)
 
     def modify(self, name: str, options: ConnectionOptions) -> None:
