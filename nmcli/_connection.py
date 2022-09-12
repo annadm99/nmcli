@@ -14,10 +14,12 @@ class ConnectionControlInterface:
     def add(self,
             conn_type: str,
             ssid: str,
-            options: Optional[ConnectionOptions] = None,
+            mode: str = None,
+            autoconnect: bool = None,
             ifname: str = "*",
-            name: str = None,
-            autoconnect: bool = None) -> None:
+            ip: str = None,
+            save: str = "yes",
+            name: str = None) -> None:
         raise NotImplementedError
 
     def modify(self, name: str, options: ConnectionOptions) -> None:
@@ -56,18 +58,23 @@ class ConnectionControl(ConnectionControlInterface):
     def add(self,
             conn_type: str,
             ssid: str,
-            options: Optional[ConnectionOptions] = None,
+            mode: str = None,
+            autoconnect: bool = None,
             ifname: str = "*",
-            name: str = None,
-            autoconnect: bool = None) -> None:
-        cmd = ['connection', 'add', 'type', conn_type, 'ssid', ssid, 'ifname', ifname]
+            ip: str = None,
+            save: str = "yes",
+            name: str = None
+            ) -> None:
+        cmd = ['connection', 'add', 'type', conn_type, 'ssid', ssid, 'ifname', ifname, 'save', save]
         if autoconnect is not None:
             cmd += ['autoconnect', 'yes' if autoconnect else 'no']
+        if conn_type is "wifi" and mode is not None:
+            cmd += ['mode', mode]
+            if mode is "ap":
+                cmd += ['ipv4.method', 'shared', 'ipv4.addr', ip]
         if not name is None:
             cmd += ['con-name', name]
-        options = {} if options is None else options
-        for k, v in options.items():
-            cmd += [k, v]
+ 
         self._syscmd.nmcli(cmd)
 
     def modify(self, name: str, options: ConnectionOptions) -> None:
