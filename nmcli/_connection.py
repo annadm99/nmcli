@@ -13,6 +13,7 @@ class ConnectionControlInterface:
 
     def add(self,
             conn_type: str,
+            ssid: str,
             options: Optional[ConnectionOptions] = None,
             ifname: str = "*",
             name: str = None,
@@ -54,11 +55,12 @@ class ConnectionControl(ConnectionControlInterface):
 
     def add(self,
             conn_type: str,
+            ssid: str,
             options: Optional[ConnectionOptions] = None,
             ifname: str = "*",
             name: str = None,
             autoconnect: bool = None) -> None:
-        cmd = ['connection', 'add', 'type', conn_type, 'ifname', ifname]
+        cmd = ['connection', 'add', 'type', conn_type, 'ssid', ssid, 'ifname', ifname]
         if autoconnect is not None:
             cmd += ['autoconnect', 'yes' if autoconnect else 'no']
         if not name is None:
